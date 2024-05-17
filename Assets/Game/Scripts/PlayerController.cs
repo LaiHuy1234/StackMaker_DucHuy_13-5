@@ -18,6 +18,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameObject brickPrefab;
     [SerializeField] private GameObject player;
     [SerializeField] private GameObject brickOnBridge;
+    private float height;
+    [SerializeField] Transform playerModel;
+    [SerializeField] private float moveSpeed;
+    public Vector3 moveDirection;
+    public float rayCastDistance;
+    [SerializeField] List<GameObject> Brick= new List<GameObject>();
+
 
 
     //private void awake()
@@ -41,42 +48,42 @@ public class PlayerController : MonoBehaviour
         //transform.position = vectorDirection * Speed * Time.deltaTime;
     }
 
-    private void Move()
-    {
-        // Convert từ Vector3 => Vector2
-        Vector3 vectorDirection = GetMoveDirectionBySwipeDirection(m_direction);
-        // Vẽ tia RayCast
-        Ray ray = new Ray(transform.position + vectorDirection * 0.5f, Vector3.down);
-        RaycastHit hit;
-        int countBrick = 0;
-        int countUnBrick = 0;
-        int countPath = 0;
-        if (Physics.Raycast(ray, out hit))
-        {
-            Debug.DrawRay(transform.position + vectorDirection, Vector3.up * 5f, Color.red);
-            if (hit.collider.CompareTag(GameTag.Brick.ToString()))
-            {
-                countBrick++;
-            }
-            else if (hit.collider.CompareTag(GameTag.UnBrick.ToString()))
-            {
-                countUnBrick++;
-            }
-            else if (hit.collider.CompareTag(GameTag.Finish.ToString()))
-            {
-                Debug.Log(1);
-                countPath++;
-            }
-            //else if (hit.collider.comparetag(gametag.destination.tostring()))
-            //{
-            //    //removebrick();
-            //    debug.log("win");
-            //}
-        }
-        //Hàm Di chuyển nhân vật
-        m_targetPos = transform.position + (countBrick + countUnBrick + countPath) * vectorDirection;
-        transform.position = Vector3.MoveTowards(transform.position, m_targetPos, Speed * Time.deltaTime);
-    }
+    //private void Move()
+    //{
+    //    // Convert từ Vector3 => Vector2
+    //    Vector3 vectorDirection = GetMoveDirectionBySwipeDirection(m_direction);
+    //    // Vẽ tia RayCast
+    //    Ray ray = new Ray(transform.position + vectorDirection * 0.5f, Vector3.down);
+    //    RaycastHit hit;
+    //    int countBrick = 0;
+    //    int countUnBrick = 0;
+    //    int countPath = 0;
+    //    if (Physics.Raycast(ray, out hit))
+    //    {
+    //        Debug.DrawRay(transform.position + vectorDirection, Vector3.up * 5f, Color.red);
+    //        if (hit.collider.CompareTag(GameTag.Brick.ToString()))
+    //        {
+    //            countBrick++;
+    //        }
+    //        else if (hit.collider.CompareTag(GameTag.UnBrick.ToString()))
+    //        {
+    //            countUnBrick++;
+    //        }
+    //        else if (hit.collider.CompareTag(GameTag.Finish.ToString()))
+    //        {
+    //            Debug.Log(1);
+    //            countPath++;
+    //        }
+    //        //else if (hit.collider.comparetag(gametag.destination.tostring()))
+    //        //{
+    //        //    //removebrick();
+    //        //    debug.log("win");
+    //        //}
+    //    }
+    //    //Hàm Di chuyển nhân vật
+    //    m_targetPos = transform.position + (countBrick + countUnBrick + countPath) * vectorDirection;
+    //    transform.position = Vector3.MoveTowards(transform.position, m_targetPos, Speed * Time.deltaTime);
+    //}
     public enum Direction
     {
         None,
@@ -194,5 +201,48 @@ public class PlayerController : MonoBehaviour
             default:
                 return Vector3.zero;
         }
+    }
+
+    private void PickDash(GameObject dash)
+    {
+        Destroy(dash);
+        height += 0.2f;
+        // Khai báo chiều cao Model của nhân vật tăng lên
+        playerModel.position = new Vector3(playerModel.position.x, playerModel.position.y + 0.2f, playerModel.position.z);
+        // Object đi theo nhân vật, hàm sinh ra
+        GameObject go = Instantiate(brickPrefab, transform);
+        go.transform.position = new Vector3(transform.position.x, transform.position.y + height, transform.position.z);
+        Brick.Add(go);
+    }
+
+    private void BuildBrigh(GameObject dash)
+    {
+
+        height -= 0.2f;
+        playerModel.position = new Vector3(playerModel.position.x, playerModel.position.y - 0.2f, playerModel.position.z);
+        dash.GetComponent<MeshRenderer>().enabled = true;
+        dash.GetComponent<BoxCollider>().enabled = false;
+        Brick.RemoveAt(0);
+    }
+
+   private void Move()
+    {
+        Vector3 moveDirection = GetMoveDirectionBySwipeDirection(m_direction);
+
+        Ray ray = new Ray(moveDirection, transform.position);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, rayCastDistance))
+        {
+           if (hit.collider.gameObject.tag == "Dash")
+            {
+                PickDash(hit.collider.gameObject);
+            }
+           if (hit.collider.gameObject.tag == "Brigh")
+            {
+                BuildBrigh(hit.collider.gameObject);
+            }
+        }
+
+        transform.Translate(moveDirection * moveSpeed * Time.deltaTime, Space.World);
     }
 }
