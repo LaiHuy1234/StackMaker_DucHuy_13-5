@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 33150582636411261}
   - component: {fileID: 23054566729670232}
   - component: {fileID: 7680622066003192310}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: zhangaikuai
   m_TagString: wall
   m_Icon: {fileID: 0}
@@ -103,7 +103,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1.0000002, z: 0.04877422}
+  m_Size: {x: 0.9, y: 0.9, z: 20}
   m_Center: {x: 0, y: 0, z: -0.02438711}
 --- !u!1 &1121066348938118
 GameObject:

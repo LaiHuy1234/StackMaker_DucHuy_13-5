@@ -108,12 +108,12 @@ public class PlayerController : MonoBehaviour
     {
         GetTouchEvent();
         Move();
-        if (CheckBrick())
-        {
-            Debug.Log("da chay");
-            player.gameObject.transform.GetChild(0).gameObject.tag = GameTag.Player.ToString();
-            AddBrick();
-        }
+        //if (CheckBrick())
+        //{
+        //    Debug.Log("da chay");
+        //    player.gameObject.transform.GetChild(0).gameObject.tag = GameTag.Player.ToString();
+        //    //AddBrick();
+        //}
 
     }
 
@@ -146,42 +146,42 @@ public class PlayerController : MonoBehaviour
             m_direction = Direction.None;
         }
     }
-    private bool CheckBrick()
-    {
-        //Hàm Convert
-        Vector3 vectorDirection = GetMoveDirectionBySwipeDirection(m_direction);
-        //Bắn 1 tia Raycast check
-        Ray ray = new Ray(transform.position - vectorDirection, Vector3.down);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit))
-        {
-            Debug.DrawRay(transform.position - vectorDirection, Vector3.up, Color.blue);
-            if (hit.collider.CompareTag(GameTag.Brick.ToString()))
-            {
-                Debug.Log("gach");
-                hit.collider.gameObject.SetActive(false);
-                //score++;
-                //UIManager.Instance().UpdateScore();
-                return true;
-            }
-        }
-        return false;
-    }
-    private void AddBrick()
-    {
-        //goi ra obj con cua prefab brick 
-        Transform brickChildPath = brickPrefab.gameObject.transform.GetChild(0);
-        //lay ra anim
-        GameObject playerAnim = player.transform.GetChild(0).gameObject;
-        playerAnim.transform.position += Vector3.up * 0.3f;
-        Debug.Log("chua sinh ");
-        Transform brickObject = Instantiate(brickChildPath, playerAnim.transform.position + Vector3.down * 0.5f,
-            brickChildPath.transform.rotation);
-        Debug.Log("da sinh ra");
-        m_brickStack.Push(brickObject);
-        brickObject.SetParent(player.transform);
-        brickChildPath.gameObject.SetActive(true);
-    }
+    //private bool CheckBrick()
+    //{
+    //    //Hàm Convert
+    //    Vector3 vectorDirection = GetMoveDirectionBySwipeDirection(m_direction);
+    //    //Bắn 1 tia Raycast check
+    //    Ray ray = new Ray(transform.position - vectorDirection, Vector3.down);
+    //    RaycastHit hit;
+    //    if (Physics.Raycast(ray, out hit))
+    //    {
+    //        Debug.DrawRay(transform.position - vectorDirection, Vector3.up, Color.blue);
+    //        if (hit.collider.CompareTag(GameTag.Brick.ToString()))
+    //        {
+    //            Debug.Log("gach");
+    //            hit.collider.gameObject.SetActive(false);
+    //            //score++;
+    //            //UIManager.Instance().UpdateScore();
+    //            return true;
+    //        }
+    //    }
+    //    return false;
+    //}
+    //private void AddBrick()
+    //{
+    //    //goi ra obj con cua prefab brick 
+    //    Transform brickChildPath = brickPrefab.gameObject.transform.GetChild(0);
+    //    //lay ra anim
+    //    GameObject playerAnim = player.transform.GetChild(0).gameObject;
+    //    playerAnim.transform.position += Vector3.up * 0.3f;
+    //    Debug.Log("chua sinh ");
+    //    Transform brickObject = Instantiate(brickChildPath, playerAnim.transform.position + Vector3.down * 0.5f,
+    //        brickChildPath.transform.rotation);
+    //    Debug.Log("da sinh ra");
+    //    m_brickStack.Push(brickObject);
+    //    brickObject.SetParent(player.transform);
+    //    brickChildPath.gameObject.SetActive(true);
+    //}
 
     private Vector3 GetMoveDirectionBySwipeDirection(Direction swipeDirection)
     // chuyển đổi vector2 sang vector3
